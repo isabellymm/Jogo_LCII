@@ -8,9 +8,12 @@ import random
 tl = turtle.Screen()
 tl.bgcolor("black")
 tl.title =("Space Invaders")
+tl.bgpic("tl.gif")
+tl.tracer(0)
 
+tl.register_shape("invader.gif")
+tl.register_shape("player.gif")
 
-#delay = raw_imput("Enter para sair")
 
 #tela setup
 border_pen = turtle.Turtle()
@@ -33,7 +36,7 @@ ponto_pen.speed(0)
 ponto_pen.color("white")
 ponto_pen.penup()
 ponto_pen.setposition(-290, 270)
-pontostring = "Pontos: %s" %ponto
+pontostring = "Pontos: {}" .format(ponto)
 ponto_pen.write(pontostring, False, align = "left", font = ("arial", 14, "normal"))
 ponto_pen.hideturtle()
 
@@ -41,19 +44,17 @@ ponto_pen.hideturtle()
 #heroi
 player = turtle.Turtle()
 player.color("blue")
-player.shape("triangle")
+player.shape("player.gif")
 player.penup()
 player.speed(0)
 player.setposition(0,-250)
 player.setheading(90)
-
-
-playerspeed = 15
+player.speed = 0
 
 
 
 #escolher qtd inimigos
-num_inimigos = 5
+num_inimigos = 30
 
 inimigos = []
 
@@ -62,17 +63,24 @@ inimigos = []
 for i in range(num_inimigos):
     inimigos.append(turtle.Turtle())
     
+inimigo_start_x = -225
+inimigo_start_y = 250
+inimigo_num = 0
+       
 for inimigo in inimigos:
-    inimigo.color("yellow")
-    inimigo.shape("circle")
+    inimigo.shape("invader.gif")
     inimigo.penup()
     inimigo.speed(0)
-    x = random.randint(-200, 200)
-    y = random.randint(100, 250)
+    x = inimigo_start_x + (50 * inimigo_num)
+    y = inimigo_start_y 
     inimigo.setposition(x,y)
+    
+    inimigo_num +=1
+    if inimigo_num == 10:
+        inimigo_start_y -= 50
+        inimigo_num = 0
 
-
-inimigospeed = 2
+inimigospeed = 0.02
 
 
 
@@ -87,26 +95,29 @@ tiro.setheading(90)
 tiro.shapesize(0.5, 0.5)
 tiro.hideturtle()
 
-tirospeed = 20
-#tiro estados
+tirospeed =3
+#tiro estado s
 tiroestado = "pronto"
 
 
 #mover p/ direita e esquerda
 def mov_esq():
-    x = player.xcor()
-    x -= playerspeed
-    if x < -280:
-        x = -280
-    player.setx(x)
+    player.speed = -1
+
     
 def mov_dir():
+    player.speed = 1
+
+def mov_player():
     x = player.xcor()
-    x += playerspeed
-    if x > 280:
-        x = 270
-    player.setx(x)
-    
+    x += player.speed
+    if x <= -280:
+        x = -280
+    if x >= 280:
+        x = 280
+    player.setx(x) 
+
+      
 #mover tiro
 
 def mov_tiro():
@@ -124,17 +135,35 @@ def colisao(t1, t2):
     else:
         return False
 
+def win():
+    if ponto == 300:
+        tl2 = turtle.Screen()
+        tl.bgcolor("black")
+        tl.title =("Space Invaders")
+        tl.bgpic("winner.gif")
+        player.setposition(0,-4000)
     
-turtle.listen()
-turtle.onkey(mov_esq, "Left")
-turtle.onkey(mov_dir, "Right")
-turtle.onkey(mov_tiro, "space")
+def menu():
+    tl3 = turtle.Screen()
+    tl.bgcolor("black")
+    tl.title =("Space Invaders")
+    tl.bgpic("winner.gif")
+    #if tl.onkeypress("space"):
+       
+
     
-    
-    
-    
+tl.listen()
+tl.onkeypress(mov_esq, "Left")
+tl.onkeypress(mov_dir, "Right")
+tl.onkeypress(mov_tiro, "space")
+
+
+
 # Main Jogo loop
 while True:
+  #  menu()
+    tl.update()
+    mov_player()
     
     for inimigo in inimigos:
         #mover o inimigo
@@ -166,14 +195,12 @@ while True:
          
            tiro.hideturtle()
            tiroestado ="pronto"
-           tiro.setposition(0, -400)
-           x = random.randint(-200, 200)
-           y = random.randint(100, 250)
-           inimigo.setposition(x,y)
+           tiro.setposition(0, -40000)
+           inimigo.setposition(0,10000)
            
            #pontuacao
            ponto += 10
-           pontostring = "Pontos: %s" %ponto
+           pontostring = "Pontos: {}" .format(ponto)
            ponto_pen.clear()
            ponto_pen.write(pontostring, False, align = "left", font = ("arial", 14, "normal"))
 
@@ -183,7 +210,7 @@ while True:
             player.hideturtle()
             inimigo.hideturtle()
             print ("Game Over")
-            break
+         
 
     #mover o tiro
     y = tiro.ycor()
@@ -194,33 +221,22 @@ while True:
     if tiro.ycor() > 275:
         tiro.hideturtle()
         tiroestado = "pronto"
+    win()
+        
+#o q tem q fazer        
+#tela menu        
+#setar o speed de todos os bonecos
+#tela game over
+#tela win
+#def vidas():
+#--opcional--
+#def inimigos atirar
+        
+#if all inimigos setposition == (0,100000)
+    #tela win
+        
+#if ponto == 300
+    #tela win
          
  
-
-#delay = raw_input("Enter para sair")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
